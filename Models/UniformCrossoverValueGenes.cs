@@ -14,12 +14,13 @@ namespace Metaheuristic.NET.Models
     public class UniformCrossoverValueGenes
     {
 
-        public UniformCrossoverValueGenes(List<IGeneticChromosome> StartingGen, int NumOfParents = 2, double MutationChance = 0.2, double MutationFactor = 3)
+        public UniformCrossoverValueGenes(List<IGeneticChromosome> StartingGen, int NumOfParents = 2, double MutationChance = 0.2, double MutationFactor = 3, int SizeOfGeneration = 100)
         {
             CurrentGeneration = StartingGen;
             NumberOfParents = NumOfParents;
             this.MutationChance = MutationChance;
             this.MutationFactor = MutationFactor;
+            this.SizeOfGeneration = SizeOfGeneration;
         }
         /// <summary>
         /// The current population of chromosomes (i.e. current genes being used to try and solve the given problem).
@@ -41,6 +42,10 @@ namespace Metaheuristic.NET.Models
         /// The divisor for 1, to determine the maximum percentage that random mutations can alter a gene (for instance, if set to 5, then 1/5 or 20% is the maximum they can increase or decrease, and that number is randomly determined upon mutation.)
         /// </summary>
         double MutationFactor { get; set; }
+        /// <summary>
+        /// The maximum size of a generation that will be bred; for instance if it is set to 100, then a maximum of 100 new chromosomes will be bred per generation.
+        /// </summary>
+        int SizeOfGeneration { get; set; }
 
         /// <summary>
         /// An implementation of a genetic algorithm that will breed a new set of objects. Time complexity: O(n*m) where n is the size of the population, and m is the size of the genome.
@@ -69,6 +74,11 @@ namespace Metaheuristic.NET.Models
                 // how to directly modify anything it's being used to evolve.
                 CurrentGeneration[i].DecimalGenes = NewGeneration[i].DecimalGenes;
             }
+            for (int i = CurrentGeneration.Count; i < NewGeneration.Count; i++)
+            {
+                // If we have more chromosomes in the new generation, we just want to add them to the current generation.
+                CurrentGeneration.Add(NewGeneration[i].Clone());
+            }
         }
 
         /// <summary>
@@ -95,13 +105,13 @@ namespace Metaheuristic.NET.Models
         {
             Random rnd = new Random();
             var newGeneration = new List<IGeneticChromosome>();
-            for(int i = 0; i < CurrentGeneration.Count; i++)
+            for(int i = 0; i < SizeOfGeneration; i++)
             {
-                newGeneration.Add(CurrentGeneration[i].Clone()); // Clone the current genome, so that we can safely modify it before 
+                newGeneration.Add(CurrentGeneration[0].Factory()); // It doesn't matter, as far as the Genetic Algorithm is concerned, which one you pick, because the genes are all going to be overridden by the parents anyway.
                 for (int j = 0; j < newGeneration[i].DecimalGenes.Count; j++) // Time to collect genes from parents!
                 {
                     IGeneticChromosome parent = Parents[rnd.Next(1, Parents.Count + 1)]; // Get a random parent
-                    newGeneration[i].DecimalGenes.Add(parent.DecimalGenes[j]); // Acquire gene
+                    newGeneration[i].DecimalGenes[j] = parent.DecimalGenes[j]; // Acquire gene
                 }
             }
             return newGeneration;

@@ -15,7 +15,7 @@ namespace Metaheuristic.NET.Static
         /// <summary>
         /// In Selection algorithms where only a limited number of parents is desired, this is the upper bound.
         /// </summary>
-        public static int NumberOfParentsToReturn = 2;
+        public static int NumberOfParentsToReturn { get; set; } = 2;
 
         /// <summary>
         /// Returns the top parents from the population, based on their fitness scores, each with equal chances of being selected. The number of parents returns is based on <see cref="NumberOfParentsToReturn"/>.
