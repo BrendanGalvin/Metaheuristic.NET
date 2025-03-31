@@ -29,7 +29,7 @@ namespace Metaheuristic.NET.Models
         /// <summary>
         /// A list containing, in chronological order, all generations that have been computed during the current runtime of this genetic algorithm.
         /// </summary>
-        List<List<IGeneticChromosome>> Generations { get; set; }
+        List<List<IGeneticChromosome>> Generations { get; set; } = new List<List<IGeneticChromosome>>();
         /// <summary>
         /// The number of top fitness candidates to pull from the population, when selecting new parents to breed for subsequent generations.
         /// </summary>
@@ -110,7 +110,7 @@ namespace Metaheuristic.NET.Models
                 newGeneration.Add(CurrentGeneration[0].Factory()); // It doesn't matter, as far as the Genetic Algorithm is concerned, which one you pick, because the genes are all going to be overridden by the parents anyway.
                 for (int j = 0; j < newGeneration[i].DecimalGenes.Count; j++) // Time to collect genes from parents!
                 {
-                    IGeneticChromosome parent = Parents[rnd.Next(1, Parents.Count + 1)]; // Get a random parent
+                    IGeneticChromosome parent = Parents[rnd.Next(0, Parents.Count)]; // Get a random parent
                     newGeneration[i].DecimalGenes[j] = parent.DecimalGenes[j]; // Acquire gene
                 }
             }
